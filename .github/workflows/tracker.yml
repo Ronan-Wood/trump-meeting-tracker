@@ -39,7 +39,7 @@ jobs:
           python trump_meetings_tracker_enhanced.py
       
       - name: Upload database artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: meetings-database
