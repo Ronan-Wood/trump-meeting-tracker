@@ -1,0 +1,345 @@
+{
+  "data_sources": {
+    "news_apis": {
+      "description": "Major news sources for Trump meetings coverage",
+      "sources": [
+        {
+          "name": "Reuters",
+          "api": "https://www.reuters.com/",
+          "topics": ["trump meetings", "white house", "mar-a-lago"],
+          "reliability": "high"
+        },
+        {
+          "name": "Bloomberg",
+          "api": "https://www.bloomberg.com/",
+          "topics": ["business meetings", "ceo visits", "policy discussions"],
+          "reliability": "high"
+        },
+        {
+          "name": "CNN Politics",
+          "api": "https://www.cnn.com/politics",
+          "topics": ["presidential meetings", "foreign leaders"],
+          "reliability": "medium-high"
+        },
+        {
+          "name": "NPR",
+          "api": "https://www.npr.org/",
+          "topics": ["political meetings", "business roundtables"],
+          "reliability": "high"
+        },
+        {
+          "name": "Axios",
+          "api": "https://www.axios.com/",
+          "topics": ["executive meetings", "policy discussions"],
+          "reliability": "high"
+        },
+        {
+          "name": "Politico",
+          "api": "https://www.politico.com/",
+          "topics": ["white house meetings", "legislative discussions"],
+          "reliability": "high"
+        }
+      ]
+    },
+    "official_sources": {
+      "description": "Official government and presidential sources",
+      "sources": [
+        {
+          "name": "White House Press Schedule",
+          "url": "https://www.whitehouse.gov/",
+          "description": "Official presidential schedule releases",
+          "data_type": "structured",
+          "reliability": "highest"
+        },
+        {
+          "name": "Factba.se Trump Schedule",
+          "url": "https://rollcall.com/factbase/trump/topic/calendar/",
+          "description": "Comprehensive Trump public schedule archive",
+          "data_type": "structured",
+          "reliability": "high"
+        }
+      ]
+    },
+    "business_sources": {
+      "description": "Business-focused reporting on corporate meetings",
+      "sources": [
+        {
+          "name": "Business Roundtable",
+          "url": "https://www.businessroundtable.org/",
+          "description": "CEOs meetings with administration",
+          "industries": ["multi-sector"],
+          "reliability": "high"
+        },
+        {
+          "name": "Fortune",
+          "url": "https://fortune.com/",
+          "description": "Tech and business leader meetings",
+          "industries": ["tech", "finance", "manufacturing"],
+          "reliability": "high"
+        },
+        {
+          "name": "CNBC",
+          "url": "https://www.cnbc.com/",
+          "description": "Business and market-focused coverage",
+          "industries": ["all"],
+          "reliability": "high"
+        },
+        {
+          "name": "Wall Street Journal",
+          "url": "https://www.wsj.com/",
+          "description": "Finance and corporate America meetings",
+          "industries": ["finance", "manufacturing", "energy"],
+          "reliability": "highest"
+        }
+      ]
+    },
+    "specialized_tracking": {
+      "description": "Specialized databases and trackers",
+      "sources": [
+        {
+          "name": "World Economic Forum (Davos)",
+          "url": "https://www.weforum.org/",
+          "description": "Annual global CEO meetings",
+          "event_based": true,
+          "reliability": "high"
+        },
+        {
+          "name": "Wikipedia Presidential Trips",
+          "url": "https://en.wikipedia.org/wiki/List_of_presidential_trips_made_by_Donald_Trump_(2025)",
+          "description": "Comprehensive trip and meeting logs",
+          "data_type": "structured",
+          "reliability": "medium"
+        }
+      ]
+    },
+    "social_media": {
+      "description": "Real-time updates from official accounts",
+      "sources": [
+        {
+          "name": "Truth Social / X",
+          "description": "Trump's official social media",
+          "reliability": "primary source, but needs verification"
+        },
+        {
+          "name": "Company Press Releases",
+          "description": "Corporate announcements of meetings",
+          "reliability": "high"
+        }
+      ]
+    }
+  },
+  "search_strategies": {
+    "keywords": [
+      "Trump meets with",
+      "Trump hosts",
+      "Mar-a-Lago meeting",
+      "White House meeting",
+      "Trump CEO",
+      "Trump executive",
+      "Business Roundtable",
+      "Trump [company name]",
+      "Trump [industry] leaders"
+    ],
+    "date_ranges": {
+      "default_lookback": 30,
+      "comprehensive_review": 365
+    },
+    "update_frequency": "daily"
+  },
+  "industry_categories": [
+    {
+      "name": "3PL",
+      "description": "Third-Party Logistics",
+      "keywords": ["logistics", "3pl", "third party logistics", "supply chain logistics", "warehousing", "distribution"],
+      "related_companies": ["XPO Logistics", "C.H. Robinson", "J.B. Hunt", "Ryder", "Penske Logistics", "DHL Supply Chain", "FedEx Logistics", "UPS Supply Chain"],
+      "trade_associations": ["IWLA", "3PL Central"]
+    },
+    {
+      "name": "Asian 3PL",
+      "description": "Asian Third-Party Logistics companies",
+      "keywords": ["asian logistics", "china logistics", "asia supply chain", "cross-border logistics"],
+      "related_companies": ["Nippon Express", "Kerry Logistics", "YTO Express", "ZTO Express", "SF Express", "Sinotrans"],
+      "geographic_focus": ["China", "Japan", "South Korea", "Southeast Asia"]
+    },
+    {
+      "name": "Agriculture",
+      "description": "Agricultural production and agribusiness",
+      "keywords": ["farming", "agriculture", "agribusiness", "crop", "livestock", "agtech"],
+      "related_companies": ["Archer Daniels Midland", "Bunge", "Cargill", "Corteva", "Deere & Company", "CNH Industrial"],
+      "trade_associations": ["American Farm Bureau", "National Farmers Union"]
+    },
+    {
+      "name": "Automotive",
+      "description": "Automotive manufacturing and suppliers",
+      "keywords": ["automotive", "auto manufacturing", "vehicle production", "auto parts", "EV", "electric vehicle"],
+      "related_companies": ["GM", "Ford", "Stellantis", "Tesla", "Rivian", "Lucid", "Lear", "Aptiv", "Magna"],
+      "trade_associations": ["Auto Alliance", "MEMA"]
+    },
+    {
+      "name": "Building Materials",
+      "description": "Construction materials and building products",
+      "keywords": ["building materials", "construction materials", "lumber", "cement", "steel", "roofing", "insulation"],
+      "related_companies": ["Owens Corning", "USG", "James Hardie", "Martin Marietta", "Vulcan Materials", "CRH", "Builders FirstSource"],
+      "trade_associations": ["NAHB", "Associated General Contractors"]
+    },
+    {
+      "name": "Data Center",
+      "description": "Data center development and operations",
+      "keywords": ["data center", "datacenter", "cloud infrastructure", "colocation", "server infrastructure", "hyperscale"],
+      "related_companies": ["Equinix", "Digital Realty", "CoreSite", "CyrusOne", "QTS Realty", "Switch", "Iron Mountain"],
+      "related_tech": ["Amazon AWS", "Microsoft Azure", "Google Cloud"]
+    },
+    {
+      "name": "E-Commerce",
+      "description": "E-commerce and online retail operations",
+      "keywords": ["ecommerce", "e-commerce", "online retail", "marketplace", "direct-to-consumer", "DTC"],
+      "related_companies": ["Amazon", "Shopify", "Walmart.com", "Target.com", "Wayfair", "Chewy", "Etsy"],
+      "trade_associations": ["Digital Commerce 360"]
+    },
+    {
+      "name": "Asian E-Commerce",
+      "description": "Asian e-commerce platforms and operations",
+      "keywords": ["alibaba", "temu", "shein", "jd.com", "pinduoduo", "lazada", "shopee", "rakuten"],
+      "related_companies": ["Alibaba", "JD.com", "Pinduoduo", "Coupang", "Rakuten", "Sea Limited"],
+      "geographic_focus": ["China", "Southeast Asia", "Japan", "South Korea"]
+    },
+    {
+      "name": "Food & Beverage",
+      "description": "Food and beverage manufacturing and distribution",
+      "keywords": ["food manufacturing", "beverage", "food processing", "packaged food", "food distribution", "CPG food"],
+      "related_companies": ["PepsiCo", "Coca-Cola", "Tyson Foods", "Kraft Heinz", "General Mills", "Conagra", "Sysco", "US Foods"],
+      "trade_associations": ["Food Marketing Institute", "Grocery Manufacturers Association"]
+    },
+    {
+      "name": "Fulfillment & Packaging",
+      "description": "Order fulfillment services and packaging solutions",
+      "keywords": ["fulfillment", "packaging", "order fulfillment", "pack and ship", "kitting", "packaging materials"],
+      "related_companies": ["ShipBob", "Deliverr", "Red Stag Fulfillment", "International Paper", "WestRock", "Sealed Air", "Berry Global"],
+      "trade_associations": ["Packaging Machinery Manufacturers Institute"]
+    },
+    {
+      "name": "Life Sciences",
+      "description": "Pharmaceuticals, biotech, and medical devices",
+      "keywords": ["pharmaceuticals", "biotech", "life sciences", "medical devices", "drug manufacturing", "clinical"],
+      "related_companies": ["Pfizer", "Johnson & Johnson", "Merck", "AbbVie", "Amgen", "Gilead", "Medtronic", "Thermo Fisher"],
+      "trade_associations": ["PhRMA", "BIO"]
+    },
+    {
+      "name": "Manufacturing",
+      "description": "General manufacturing and industrial production",
+      "keywords": ["manufacturing", "industrial", "factory", "production facility", "assembly", "fabrication"],
+      "related_companies": ["3M", "Caterpillar", "Honeywell", "GE", "Emerson", "Parker Hannifin", "Illinois Tool Works"],
+      "trade_associations": ["National Association of Manufacturers"]
+    },
+    {
+      "name": "Powered Land",
+      "description": "Industrial real estate and powered land development",
+      "keywords": ["industrial real estate", "powered land", "industrial park", "logistics park", "industrial development", "shovel ready"],
+      "related_companies": ["Prologis", "Duke Realty", "Americold Realty", "STAG Industrial", "EastGroup Properties", "First Industrial"],
+      "trade_associations": ["NAIOP"]
+    },
+    {
+      "name": "Retail",
+      "description": "Brick-and-mortar and omnichannel retail",
+      "keywords": ["retail", "brick and mortar", "retail chains", "stores", "shopping", "omnichannel"],
+      "related_companies": ["Walmart", "Target", "Costco", "Home Depot", "Lowe's", "Kroger", "Dollar General", "TJX Companies"],
+      "trade_associations": ["National Retail Federation"]
+    },
+    {
+      "name": "Wholesaler",
+      "description": "Wholesale distribution and distributors",
+      "keywords": ["wholesale", "distributor", "wholesale distribution", "B2B distribution", "merchant wholesaler"],
+      "related_companies": ["McKesson", "AmerisourceBergen", "Cardinal Health", "Sysco", "US Foods", "Core-Mark", "Performance Food Group"],
+      "trade_associations": ["National Association of Wholesaler-Distributors"]
+    },
+    {
+      "name": "Cold Storage",
+      "description": "Temperature-controlled storage and logistics",
+      "keywords": ["cold storage", "cold chain", "refrigerated warehouse", "frozen storage", "temperature controlled", "refrigerated logistics"],
+      "related_companies": ["Americold", "Lineage Logistics", "United States Cold Storage", "Cloverleaf Cold Storage", "Nichirei Logistics"],
+      "trade_associations": ["Global Cold Chain Alliance", "IARW"]
+    },
+    {
+      "name": "Other",
+      "description": "Other industries not specified above",
+      "keywords": ["business", "industry", "company", "corporation"],
+      "note": "Catch-all for meetings that may have indirect relevance"
+    }
+  ],
+  "data_fields_to_capture": {
+    "meeting_details": {
+      "date": "ISO 8601 format",
+      "location": "White House, Mar-a-Lago, etc.",
+      "type": "one-on-one, group, roundtable, dinner, etc.",
+      "duration": "if available",
+      "format": "in-person, virtual, phone"
+    },
+    "attendee_details": {
+      "name": "Full name",
+      "title": "CEO, Chairman, etc.",
+      "company": "Company name",
+      "industry": "From categories list",
+      "company_market_cap": "if public",
+      "background": "Brief description"
+    },
+    "meeting_outcomes": {
+      "announcements": "Investment pledges, policy agreements",
+      "topics_discussed": "Keywords from reports",
+      "quotes": "Direct quotes from participants",
+      "follow_up_actions": "Any commitments made"
+    },
+    "source_metadata": {
+      "source_url": "Original article URL",
+      "publication": "Publication name",
+      "author": "If available",
+      "date_published": "When reported",
+      "reliability_score": "1-5 scale"
+    }
+  },
+  "known_recent_meetings": [
+    {
+      "date": "2025-01-23",
+      "event": "Davos 2025 Virtual Address",
+      "attendees": ["Stephen Schwarzman (Blackstone)", "Ana Botin (Banco Santander)", "Patrick Pouyanné (TotalEnergies)", "Brian Moynihan (Bank of America)"],
+      "industries": ["Finance", "Energy"]
+    },
+    {
+      "date": "2025-03-11",
+      "event": "Business Roundtable Quarterly Meeting",
+      "attendees": ["Tim Cook (Apple)", "Jamie Dimon (JPMorgan)", "Mary Barra (GM)", "Doug McMillon (Walmart)"],
+      "industries": ["Technology", "Finance", "Automotive", "Retail"]
+    },
+    {
+      "date": "2025-03-10",
+      "event": "Tech CEOs Meeting",
+      "attendees": ["IBM CEO", "Intel CEO", "Qualcomm CEO", "HP CEO"],
+      "industries": ["Technology", "Semiconductors", "Hardware"]
+    },
+    {
+      "date": "2025-09-04",
+      "event": "White House Tech Dinner",
+      "attendees": ["Mark Zuckerberg (Meta)", "Satya Nadella (Microsoft)", "Sundar Pichai (Google)", "Bill Gates", "Tim Cook (Apple)", "Sam Altman (OpenAI)"],
+      "industries": ["Technology", "AI"]
+    },
+    {
+      "date": "2025-12-28",
+      "event": "Mar-a-Lago Meeting",
+      "attendees": ["Volodymyr Zelensky"],
+      "type": "Foreign Leader",
+      "industries": ["Government/Defense"]
+    },
+    {
+      "date": "2025-12-29",
+      "event": "Mar-a-Lago Meeting",
+      "attendees": ["Benjamin Netanyahu"],
+      "type": "Foreign Leader",
+      "industries": ["Government/Defense"]
+    }
+  ],
+  "notes": {
+    "visitor_logs": "During first term, Mar-a-Lago visitor logs were subject to 'Mar-a-Lago Act' disclosure requirements. Check if similar transparency exists in second term.",
+    "frequency": "Trump frequently holds meetings at Mar-a-Lago during holidays and weekends",
+    "business_roundtable": "Quarterly meetings are a key recurring event for CEO access",
+    "investment_announcements": "Many meetings result in announced US investment pledges (e.g., Apple $100B commitment)"
+  }
+}
