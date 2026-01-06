@@ -36,7 +36,7 @@ jobs:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           DAYS_BACK: ${{ github.event.inputs.days_back || '7' }}
         run: |
-          python trump_meetings_tracker_enhanced.py
+          python trump_meeting_tracker.py
       
       - name: Upload database artifact
         uses: actions/upload-artifact@v4
