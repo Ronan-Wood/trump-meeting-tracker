@@ -293,21 +293,35 @@ class TrumpMeetingsTracker:
     def is_trump_meeting_article(self, text: str) -> bool:
         """Check if article is about Trump meetings"""
         text_lower = text.lower()
-        
+
         # Must mention Trump
         if 'trump' not in text_lower:
             return False
-        
-        # Must have meeting indicators
-        meeting_words = ['meet', 'met', 'meeting', 'hosted', 'hosts', 'welcomed', 'spoke with', 'discussed with']
-        if not any(word in text_lower for word in meeting_words):
+
+        # Must have meeting indicators WITH Trump
+        meeting_patterns = [
+            'trump meet', 'trump met', 'trump host', 'trump welcomed',
+            'meeting with trump', 'met with trump', 'hosted by trump'
+        ]
+        if not any(pattern in text_lower for pattern in meeting_patterns):
             return False
-        
-        # Should mention business/executives
-        business_words = ['ceo', 'executive', 'president', 'chairman', 'chief', 'business', 'company', 'corporation']
+
+        # Should mention business/executives (CEO, not just "president" which could be foreign leaders)
+        business_words = ['ceo', 'chief executive', 'chairman', 'chief', 'business leader', 'executive', 'company']
         if not any(word in text_lower for word in business_words):
             return False
-        
+
+        # Exclude articles primarily about foreign leaders or politics
+        political_keywords = [
+            'ukraine', 'russia', 'venezuela', 'maduro', 'macron', 'zelensky', 'iran',
+            'foreign leader', 'prime minister', 'nato', 'invasion', 'military'
+        ]
+        # Count political keywords
+        political_count = sum(1 for kw in political_keywords if kw in text_lower)
+        # If more than 2 political keywords, likely not a business meeting
+        if political_count > 2:
+            return False
+
         return True
     
     def extract_meeting_date(self, text: str, published_date: str = None) -> str:
@@ -360,15 +374,21 @@ class TrumpMeetingsTracker:
         
         # Pattern 1: Name, Title of Company
         # Example: "Andy Jassy, CEO of Amazon"
-        pattern1 = r'([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?),\s+(CEO|President|Chairman|Chief\s+Executive|Chief\s+Operating\s+Officer|CFO|COO)\s+(?:of\s+|at\s+)([A-Z][A-Za-z0-9\s&\.]+?)(?:\.|,|\s+(?:said|told|announced|met|joined|attended))'
+        # Only accept CEO/Chairman/Chief titles, NOT "President" which is often foreign leaders
+        pattern1 = r'([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?),\s+(CEO|Chairman|Chief\s+Executive|Chief\s+Operating\s+Officer|CFO|COO|Chief\s+Financial\s+Officer)\s+(?:of\s+|at\s+)([A-Z][A-Za-z0-9\s&\.]+?)(?:\.|,|\s+(?:said|told|announced|met|joined|attended))'
         matches1 = re.findall(pattern1, text)
-        
+
         for match in matches1:
             name, title, company = match
             company = company.strip()
+
+            # Skip if company looks like a country or government entity
+            if self.is_government_or_country(company):
+                continue
+
             # Clean up company name
             company = re.sub(r'\s+Inc\.?|\s+Corp\.?|\s+LLC|\s+Ltd\.?', '', company)
-            
+
             attendees.append({
                 'name': name.strip(),
                 'title': title.strip(),
@@ -378,20 +398,25 @@ class TrumpMeetingsTracker:
         
         # Pattern 2: Company CEO Name
         # Example: "Amazon CEO Andy Jassy"
-        pattern2 = r'([A-Z][A-Za-z0-9\s&\.]+?)\s+(CEO|President|Chairman)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)'
+        # Only accept CEO/Chairman, NOT "President"
+        pattern2 = r'([A-Z][A-Za-z0-9\s&\.]+?)\s+(CEO|Chairman|Chief\s+Executive)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)'
         matches2 = re.findall(pattern2, text)
-        
+
         for match in matches2:
             company, title, name = match
             company = company.strip()
             name_str = name.strip()
-            
+
             # Skip Trump
             if 'Trump' in name_str:
                 continue
-            
+
+            # Skip if company looks like a country or government entity
+            if self.is_government_or_country(company):
+                continue
+
             company = re.sub(r'\s+Inc\.?|\s+Corp\.?|\s+LLC|\s+Ltd\.?', '', company)
-            
+
             # Avoid duplicates
             if not any(a['name'] == name_str for a in attendees):
                 attendees.append({
@@ -401,56 +426,44 @@ class TrumpMeetingsTracker:
                     'found_in_article': True
                 })
         
-        # Pattern 3: Just names with titles (no company) - NEW!
-        # Example: "Trump met with Andy Jassy and Sundar Pichai"
-        # We'll look these up dynamically
-        
-        # First, extract all capitalized names (2-3 words)
-        pattern3 = r'\b([A-Z][a-z]{2,}\s+[A-Z][a-z]{2,}(?:\s+[A-Z][a-z]{2,})?)\b'
-        potential_names = re.findall(pattern3, text)
-        
-        # Filter out:
-        # - Names we already have
-        # - Trump (obviously)
-        # - Common false positives
-        false_positives = {
-            'Donald Trump', 'President Trump', 'Trump Administration',
-            'White House', 'Mar Lago', 'Business Roundtable', 'United States',
-            'Business Leaders', 'Corporate America', 'Palm Beach'
-        }
-        
-        existing_names = {a['name'] for a in attendees}
-        new_names = [
-            name for name in potential_names 
-            if name not in existing_names 
-            and name not in false_positives
-            and 'Trump' not in name
-            and len(name.split()) >= 2  # At least first and last name
-        ]
-        
-        # Look up names that appear multiple times (likely important)
-        from collections import Counter
-        name_counts = Counter(new_names)
-        
-        for name, count in name_counts.items():
-            # Only lookup if mentioned 2+ times OR appears near meeting words
-            if count >= 2 or self.appears_near_meeting_context(name, text):
-                # Skip if name looks like a phrase rather than a person
-                if self.looks_like_person_name(name):
-                    # Try to find company dynamically
-                    company_info = self.lookup_person_company_dynamic(name, text)
-                    
-                    if company_info and company_info['company'] != 'Unknown':
-                        attendees.append({
-                            'name': name,
-                            'title': company_info.get('title', 'Executive'),
-                            'company': company_info['company'],
-                            'found_in_article': False,  # Found via dynamic lookup
-                            'confidence': company_info.get('confidence', 'medium')
-                        })
+        # Pattern 3: Just names with titles (no company) - DISABLED to save API calls
+        # We focus on Pattern 1 and 2 which explicitly mention companies
+        # This avoids making too many NewsAPI requests for names that aren't business leaders
         
         return attendees
     
+    def is_government_or_country(self, company_name: str) -> bool:
+        """Check if the 'company' is actually a government entity or country"""
+        company_lower = company_name.lower().strip()
+
+        # List of government/political keywords
+        government_keywords = [
+            'national assembly', 'government', 'ministry', 'parliament', 'congress',
+            'senate', 'administration', 'department of', 'agency', 'commission',
+            'federal', 'state department', 'white house', 'embassy', 'consulate',
+            'republic', 'kingdom', 'federation', 'union', 'nation', 'country',
+            'military', 'army', 'navy', 'defense', 'homeland security',
+            'foreign affairs', 'state', 'democratic', 'republic of',
+            'united states', 'european union', 'nato', 'un ', 'u.n.'
+        ]
+
+        # Countries and regions
+        countries = [
+            'venezuela', 'france', 'ukraine', 'russia', 'iran', 'mexico', 'colombia',
+            'denmark', 'greenland', 'china', 'israel', 'syria', 'iraq', 'afghanistan'
+        ]
+
+        # Check if it matches any government keywords or countries
+        for keyword in government_keywords + countries:
+            if keyword in company_lower:
+                return True
+
+        # Check if it's too generic (single word entities that aren't companies)
+        if len(company_lower.split()) == 1 and company_lower in ['danish', 'venezuelan', 'colombian', 'mexican', 'iranian', 'french']:
+            return True
+
+        return False
+
     def looks_like_person_name(self, name: str) -> bool:
         """Check if a string looks like an actual person's name"""
         parts = name.split()
@@ -472,12 +485,19 @@ class TrumpMeetingsTracker:
         non_name_words = {
             'president', 'ceo', 'chairman', 'chief', 'executive', 'officer',
             'company', 'corporation', 'inc', 'llc', 'ltd', 'business',
-            'administration', 'department', 'agency', 'house', 'senate'
+            'administration', 'department', 'agency', 'house', 'senate',
+            'heritage', 'foundation', 'project', 'act', 'services', 'education',
+            'disabilities', 'human', 'armed', 'vocational', 'aptitude', 'battery',
+            'head', 'start', 'reproductive', 'freedom', 'health', 'resources',
+            'secretary', 'robert', 'alive', 'abortion', 'survivors', 'medicaid',
+            'homeland', 'security', 'border', 'protection', 'customs', 'enforcement',
+            'national', 'weather', 'service', 'fair', 'labor', 'standards',
+            'supreme', 'court', 'civil', 'war', 'white', 'donald', 'trump'
         }
-        
+
         if any(part.lower() in non_name_words for part in parts):
             return False
-        
+
         return True
     
     def appears_near_meeting_context(self, name: str, text: str) -> bool:
@@ -486,18 +506,36 @@ class TrumpMeetingsTracker:
         pos = text.find(name)
         if pos == -1:
             return False
-        
+
         # Check 100 chars before and after
         context = text[max(0, pos-100):min(len(text), pos+100)].lower()
-        
+
         meeting_words = ['met', 'meeting', 'hosted', 'spoke', 'discussed', 'attended', 'joined']
         return any(word in context for word in meeting_words)
+
+    def appears_near_business_context(self, name: str, text: str) -> bool:
+        """Check if name appears near business-related words (CEO, company, etc.)"""
+        # Find position of name
+        pos = text.find(name)
+        if pos == -1:
+            return False
+
+        # Check 100 chars before and after
+        context = text[max(0, pos-100):min(len(text), pos+100)].lower()
+
+        business_words = ['ceo', 'chief executive', 'president', 'chairman', 'company',
+                         'corporation', 'executive', 'founder', 'co-founder', 'business']
+        return any(word in context for word in business_words)
     
     def lookup_person_company_dynamic(self, person_name: str, article_context: str = "") -> Optional[Dict]:
         """
         Dynamically look up a person's company using web search
         Returns: {'company': str, 'title': str, 'confidence': str}
         """
+        # Skip lookups if we don't have NewsAPI (rate limiting protection)
+        if not self.newsapi:
+            return None
+
         print(f"    🔍 Looking up: {person_name}")
         
         # First, check if we can infer from article context
