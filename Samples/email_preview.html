@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <style>
+            body { font-family: "Georgia", "Times New Roman", serif; line-height: 1.6; color: #1f2a33; max-width: 820px; margin: 0 auto; padding: 24px; background: #ffffff; }
+            h1 { color: #0f1f2e; font-size: 26px; letter-spacing: 0.3px; border-bottom: 2px solid #d5dde6; padding-bottom: 12px; margin-bottom: 18px; }
+            h2 { color: #0f1f2e; font-size: 18px; margin-top: 28px; border-bottom: 1px solid #e6ebf0; padding-bottom: 6px; }
+            .summary { background-color: #f6f8fa; padding: 16px 18px; border: 1px solid #e1e6eb; margin: 18px 0; }
+            .high-priority { border-left: 4px solid #9b1c1c; padding: 14px 16px; margin: 14px 0; background: #fbf6f6; }
+            .medium-priority { border-left: 4px solid #b45309; padding: 14px 16px; margin: 14px 0; background: #fff8ed; }
+            .low-priority { border-left: 4px solid #6b7280; padding: 14px 16px; margin: 14px 0; background: #f8f9fb; }
+            .meeting-date { font-weight: bold; color: #111827; font-size: 1em; margin-bottom: 8px; }
+            .attendee { margin: 10px 0; padding: 10px 12px; background-color: #ffffff; border: 1px solid #e5e7eb; }
+            .company { color: #1d4ed8; font-weight: bold; }
+            .industry { color: #065f46; font-weight: 600; }
+            .confidence { font-size: 0.9em; font-style: italic; color: #4b5563; }
+            .confidence.high { color: #065f46; }
+            .confidence.medium { color: #92400e; }
+            .confidence.low { color: #991b1b; }
+            .source { font-size: 0.85em; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e5e7eb; color: #374151; }
+            .source a { color: #1d4ed8; text-decoration: none; }
+            .source a:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <h1>Trump Meetings Report</h1>
+        <div class="summary">
+            <strong>Report Generated:</strong> January 05, 2026 at 05:53 PM<br>
+            <strong>Period:</strong> Last 7 days<br>
+            <strong>New Meetings:</strong> 3<br>
+            <strong>High Priority:</strong> 3 |
+            <strong>Medium Priority:</strong> 0 |
+            <strong>Other:</strong> 0
+        </div>
+
+        <h2>High Priority - Your Industries</h2>
+        <div class="high-priority">
+            <div class="meeting-date">January 5, 2026 - Mar-a-Lago, FL</div>
+            <div class="attendee">
+                <strong>Mary Barra</strong> - CEO<br>
+                <span class="company">GM</span><br>
+                <span class="industry">Industry: Automotive</span><br>
+                <span class="confidence high">Confidence: HIGH</span>
+            </div>
+            <div style="margin-top:10px; font-size:0.9em; color:#666;"><strong>Context:</strong> Test meeting entry</div>
+            <div class="source">Source: <a href="https://example.com/test-mary-barra">Test Source</a></div>
+        </div>
+
+        <div class="high-priority">
+            <div class="meeting-date">January 4, 2026 - Mar-a-Lago, FL</div>
+            <div class="attendee">
+                <strong>Doug McMillon</strong> - CEO<br>
+                <span class="company">Walmart</span><br>
+                <span class="industry">Industry: Building Materials</span><br>
+                <span class="confidence high">Confidence: HIGH</span>
+            </div>
+            <div style="margin-top:10px; font-size:0.9em; color:#666;"><strong>Context:</strong> Test meeting entry</div>
+            <div class="source">Source: <a href="https://example.com/test-doug-mcmillon">Test Source</a></div>
+        </div>
+
+        <div class="high-priority">
+            <div class="meeting-date">January 3, 2026 - Mar-a-Lago, FL</div>
+            <div class="attendee">
+                <strong>Andy Jassy</strong> - CEO<br>
+                <span class="company">Amazon</span><br>
+                <span class="industry">Industry: E-Commerce</span><br>
+                <span class="confidence high">Confidence: HIGH</span>
+            </div>
+            <div style="margin-top:10px; font-size:0.9em; color:#666;"><strong>Context:</strong> Test meeting entry</div>
+            <div class="source">Source: <a href="https://example.com/test-andy-jassy">Test Source</a></div>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; color: #4b5563;">
+            <p><strong>About This Report</strong></p>
+            <ul>
+                <li>Automated tracking of Trump's meetings with business leaders</li>
+                <li>Sources: NewsAPI + RSS feeds from major news outlets</li>
+                <li>Industries classified based on company information</li>
+                <li>Confidence levels indicate certainty of company/industry match</li>
+                <li>Review meetings with low confidence manually</li>
+            </ul>
+        </div>
+    </body>
+</html>
