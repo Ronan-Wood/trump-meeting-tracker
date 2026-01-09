@@ -133,14 +133,16 @@ class TrumpMeetingsTracker:
         articles = []
         from_date = (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%d')
         
-        # Search queries optimized for meetings
+        # Search queries optimized for meetings (limited to avoid rate limiting)
         queries = [
             'Trump meets CEO',
             'Trump hosts business leaders',
             'Trump meeting executives',
             'Mar-a-Lago meeting',
             'White House CEO',
-            'Business Roundtable Trump'
+            'Business Roundtable Trump',
+            'Trump dinner CEO',  # Added: captures dinner meetings
+            'Trump company president',  # Added: captures president titles
         ]
         
         for query in queries:
@@ -319,14 +321,16 @@ class TrumpMeetingsTracker:
             return False
 
         # Exclude articles primarily about foreign leaders or politics
+        # But allow some political context (e.g., "CEO met Trump at White House to discuss tariffs")
         political_keywords = [
             'ukraine', 'russia', 'venezuela', 'maduro', 'macron', 'zelensky', 'iran',
-            'foreign leader', 'prime minister', 'nato', 'invasion', 'military'
+            'foreign leader', 'prime minister', 'nato', 'invasion', 'military',
+            'war', 'sanctions', 'diplomacy', 'treaty', 'ambassador'
         ]
         # Count political keywords
         political_count = sum(1 for kw in political_keywords if kw in text_lower)
-        # If more than 2 political keywords, likely not a business meeting
-        if political_count > 2:
+        # If more than 4 political keywords, likely not a business meeting (relaxed from 2)
+        if political_count > 4:
             return False
 
         return True
@@ -381,8 +385,8 @@ class TrumpMeetingsTracker:
         
         # Pattern 1: Name, Title of Company
         # Example: "Andy Jassy, CEO of Amazon"
-        # Only accept CEO/Chairman/Chief titles, NOT "President" which is often foreign leaders
-        pattern1 = r'([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?),\s+(CEO|Chairman|Chief\s+Executive|Chief\s+Operating\s+Officer|CFO|COO|Chief\s+Financial\s+Officer)\s+(?:of\s+|at\s+)([A-Z][A-Za-z0-9\s&\.]+?)(?:\.|,|\s+(?:said|told|announced|met|joined|attended))'
+        # Accept CEO/Chairman/Chief titles + President (but we'll filter out countries later)
+        pattern1 = r'([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?),\s+(CEO|Chairman|Chief\s+Executive|Chief\s+Operating\s+Officer|CFO|COO|Chief\s+Financial\s+Officer|President|Founder|Co-Founder|Managing\s+Director|Executive\s+Chairman)\s+(?:of\s+|at\s+)([A-Z][A-Za-z0-9\s&\.]+?)(?:\.|,|\s+(?:said|told|announced|met|joined|attended))'
         matches1 = re.findall(pattern1, text)
 
         for match in matches1:
@@ -405,8 +409,8 @@ class TrumpMeetingsTracker:
         
         # Pattern 2: Company CEO Name
         # Example: "Amazon CEO Andy Jassy"
-        # Only accept CEO/Chairman, NOT "President"
-        pattern2 = r'([A-Z][A-Za-z0-9\s&\.]+?)\s+(CEO|Chairman|Chief\s+Executive)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)'
+        # Accept CEO/Chairman/President/Founder (but we'll filter out countries later)
+        pattern2 = r'([A-Z][A-Za-z0-9\s&\.]+?)\s+(CEO|Chairman|Chief\s+Executive|President|Founder|Co-Founder|Managing\s+Director|Executive\s+Chairman)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)'
         matches2 = re.findall(pattern2, text)
 
         for match in matches2:
@@ -454,10 +458,14 @@ class TrumpMeetingsTracker:
             'united states', 'european union', 'nato', 'un ', 'u.n.'
         ]
 
-        # Countries and regions
+        # Countries and regions - expanded list
         countries = [
             'venezuela', 'france', 'ukraine', 'russia', 'iran', 'mexico', 'colombia',
-            'denmark', 'greenland', 'china', 'israel', 'syria', 'iraq', 'afghanistan'
+            'denmark', 'greenland', 'china', 'israel', 'syria', 'iraq', 'afghanistan',
+            'canada', 'britain', 'germany', 'italy', 'spain', 'poland', 'japan',
+            'korea', 'brazil', 'argentina', 'egypt', 'turkey', 'india', 'pakistan',
+            'saudi arabia', 'united arab emirates', 'qatar', 'taiwan', 'vietnam',
+            'thailand', 'indonesia', 'australia', 'new zealand', 'south africa'
         ]
 
         # Check if it matches any government keywords or countries
@@ -466,7 +474,12 @@ class TrumpMeetingsTracker:
                 return True
 
         # Check if it's too generic (single word entities that aren't companies)
-        if len(company_lower.split()) == 1 and company_lower in ['danish', 'venezuelan', 'colombian', 'mexican', 'iranian', 'french']:
+        nationality_adjectives = [
+            'danish', 'venezuelan', 'colombian', 'mexican', 'iranian', 'french',
+            'canadian', 'british', 'german', 'italian', 'spanish', 'japanese',
+            'korean', 'chinese', 'russian', 'ukrainian', 'israeli', 'egyptian'
+        ]
+        if len(company_lower.split()) == 1 and company_lower in nationality_adjectives:
             return True
 
         return False
