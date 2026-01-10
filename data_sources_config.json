@@ -260,6 +260,34 @@
       "trade_associations": ["Global Cold Chain Alliance", "IARW"]
     },
     {
+      "name": "Technology",
+      "description": "Technology companies including software, hardware, semiconductors, and internet",
+      "keywords": ["technology", "tech", "software", "hardware", "semiconductor", "chip", "processor", "computing", "internet", "cloud", "AI", "artificial intelligence", "machine learning"],
+      "related_companies": ["Apple", "Microsoft", "Google", "Meta", "Amazon", "Intel", "NVIDIA", "AMD", "Qualcomm", "Broadcom", "Texas Instruments", "Micron", "IBM", "Oracle", "Salesforce", "Adobe", "Tesla", "OpenAI"],
+      "trade_associations": ["Consumer Technology Association", "Semiconductor Industry Association"]
+    },
+    {
+      "name": "Finance",
+      "description": "Banking, investment, and financial services",
+      "keywords": ["bank", "banking", "finance", "financial services", "investment", "asset management", "private equity", "hedge fund", "venture capital", "insurance"],
+      "related_companies": ["JPMorgan Chase", "Bank of America", "Wells Fargo", "Citigroup", "Goldman Sachs", "Morgan Stanley", "BlackRock", "Vanguard", "Fidelity", "State Street", "Berkshire Hathaway"],
+      "trade_associations": ["American Bankers Association", "Securities Industry and Financial Markets Association"]
+    },
+    {
+      "name": "Energy",
+      "description": "Oil, gas, renewable energy, and utilities",
+      "keywords": ["energy", "oil", "gas", "petroleum", "renewable energy", "solar", "wind", "nuclear", "utility", "utilities", "power generation", "electricity"],
+      "related_companies": ["ExxonMobil", "Chevron", "ConocoPhillips", "Occidental Petroleum", "NextEra Energy", "Duke Energy", "Southern Company", "Tesla Energy"],
+      "trade_associations": ["American Petroleum Institute", "Edison Electric Institute"]
+    },
+    {
+      "name": "Telecom",
+      "description": "Telecommunications and wireless carriers",
+      "keywords": ["telecom", "telecommunications", "wireless", "carrier", "mobile", "5G", "broadband", "internet service provider", "ISP"],
+      "related_companies": ["AT&T", "Verizon", "T-Mobile", "Comcast", "Charter Communications", "Lumen Technologies"],
+      "trade_associations": ["CTIA", "USTelecom"]
+    },
+    {
       "name": "Other",
       "description": "Other industries not specified above",
       "keywords": ["business", "industry", "company", "corporation"],
